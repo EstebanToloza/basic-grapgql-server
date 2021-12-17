@@ -28,4 +28,8 @@ const typeDefs = gql`
         street: String!
         id: String!
     }
+
+    type Query {
+        personCount: Int!
+    }
 `
