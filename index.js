@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 
-const personas = [
+const persons = [
     {
         name: "Esteban",
         phone: "561582652",
@@ -31,5 +32,22 @@ const typeDefs = gql`
 
     type Query {
         personCount: Int!
+        allPersons: [Person]!
     }
 `
+
+const resolvers = {
+    Query: {
+        personCount: () => persons.length,
+        allPersons: () => persons
+    }
+}
+
+const server = new ApolloServer({
+    typeDefs,
+    resolvers
+});
+
+server.listen().then(({ url }) => {
+    console.log(`server ok en ${url}`)
+})
