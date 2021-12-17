@@ -13,5 +13,9 @@
   "dependencies": {
     "apollo-server": "^3.5.0",
     "graphql": "^16.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EstebanToloza/basic-grapgql-server"
   }
 }

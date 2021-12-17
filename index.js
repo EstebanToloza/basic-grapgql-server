@@ -1,53 +1,49 @@
-import {gql} from 'apollo-server';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, gql } from 'apollo-server';
 
-const persons = [
-    {
-        name: "Esteban",
-        phone: "561582652",
-        street: "Rosario",
-        id: "15165"
-    },
-    {
-        name: "Juan",
-        phone: "5345",
-        street: "Buenos Aires",
-        id: "53534"
-    },
-    {
-        name: "Mateo",
-        phone: "54534565",
-        street: "Salta",
-        id: "156152"
-    }
-]
-
+// A schema is a collection of type definitions (hence "typeDefs")
+// that together define the "shape" of queries that are executed against
+// your data.
 const typeDefs = gql`
-    type Person {
-        name: String!
-        phone: String!
-        street: String!
-        id: String!
-    }
+  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
 
-    type Query {
-        personCount: Int!
-        allPersons: [Person]!
-    }
-`
+  # This "Book" type defines the queryable fields for every book in our data source.
+  type Book {
+    title: String
+    author: String
+  }
+
+  # The "Query" type is special: it lists all of the available queries that
+  # clients can execute, along with the return type for each. In this
+  # case, the "books" query returns an array of zero or more Books (defined above).
+  type Query {
+    books: [Book]
+  }
+`;
+
+const books = [
+    {
+      title: 'The Awakening',
+      author: 'Kate Chopin',
+    },
+    {
+      title: 'City of Glass',
+      author: 'Paul Auster',
+    },
+  ];
+
 
 const resolvers = {
     Query: {
-        personCount: () => persons.length,
-        allPersons: () => persons
-    }
-}
+      books: () => books,
+    },
+};
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers
+// The ApolloServer constructor requires two parameters: your schema
+// definition and your set of resolvers.
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// The `listen` method launches a web server.
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url}`);
 });
 
-server.listen().then(({ url }) => {
-    console.log(`server ok en ${url}`)
-})
