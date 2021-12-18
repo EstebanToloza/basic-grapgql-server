@@ -4,37 +4,61 @@ import { ApolloServer, gql } from 'apollo-server';
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
+    type Person {
+        name: String!
+        phone: String!
+        street: String!
+        id: String
+        address: String!
+        check: String!
+    }
+    type Query {
+        personCount: Int!
+        allPersons: [Person]!
+        findPerson(name: String!): Person
+    }
 `;
 
-const books = [
+
+const persons = [
     {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
+        name: "Esteban",
+        phone: "561582652",
+        street: "Santa Fe",
+        city: "Rosario",
+        id: "15165"
     },
     {
-      title: 'City of Glass',
-      author: 'Paul Auster',
+        name: "Juan",
+        phone: "5345",
+        street: "Buenos Aires",
+        city: "Rosario",
+        // id: "53534"
     },
-  ];
+    {
+        name: "Mateo",
+        phone: "54534565",
+        street: "Salta",
+        city: "Rosario",
+        id: "156152"
+    }
+]
 
 
 const resolvers = {
     Query: {
-      books: () => books,
+        personCount: () => persons.length,
+        allPersons: () => persons,
+        findPerson:(root, args) => {
+            const {name} = args;
+            return persons.find(person => person.name === name)
+        }
     },
-};
+    Person: {
+        address: (root) => `${root.street}, ${root.city}`,
+        check: () => "Esteban"
+    }
+}
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
