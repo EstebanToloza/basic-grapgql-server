@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server';
+import {v1 as uuid} from "uuid";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -11,7 +12,7 @@ const typeDefs = gql`
     }
     type Person {
         name: String!
-        phone: String!
+        phone: String
         id: ID!
         address: Address!
     }
@@ -19,6 +20,14 @@ const typeDefs = gql`
         personCount: Int!
         allPersons: [Person]!
         findPerson(name: String!): Person
+    }
+    type Mutation{
+        addPerson(
+            name: String!
+            phone: String
+            street: String!
+            city: String!
+        ): Person
     }
 `;
 
@@ -33,7 +42,6 @@ const persons = [
     },
     {
         name: "Juan",
-        phone: "5345",
         street: "Buenos Aires",
         city: "Rosario",
         id: "53534"
@@ -47,7 +55,6 @@ const persons = [
     }
 ]
 
-
 const resolvers = {
     Query: {
         personCount: () => persons.length,
@@ -55,6 +62,13 @@ const resolvers = {
         findPerson:(root, args) => {
             const {name} = args;
             return persons.find(person => person.name === name)
+        }
+    },
+    Mutation: {
+        addPerson: (root, args) => {
+            const person = {...args, id: uuid()}
+            persons.push(person)
+            return person
         }
     },
     Person: {
