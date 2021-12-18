@@ -4,13 +4,16 @@ import { ApolloServer, gql } from 'apollo-server';
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
+
+    type Address {
+        street: String!
+        city: String!
+    }
     type Person {
         name: String!
         phone: String!
-        street: String!
-        id: String
-        address: String!
-        check: String!
+        id: ID!
+        address: Address!
     }
     type Query {
         personCount: Int!
@@ -33,7 +36,7 @@ const persons = [
         phone: "5345",
         street: "Buenos Aires",
         city: "Rosario",
-        // id: "53534"
+        id: "53534"
     },
     {
         name: "Mateo",
@@ -55,8 +58,12 @@ const resolvers = {
         }
     },
     Person: {
-        address: (root) => `${root.street}, ${root.city}`,
-        check: () => "Esteban"
+        address: (root) => {
+            return {
+                street: root.street,
+                city: root.city
+            }
+        },
     }
 }
 
